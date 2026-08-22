@@ -12,7 +12,7 @@ enum USER_CHOICE
 
 
 
-int hello_sq()
+int HelloSq()
 {
     YELLOW
     printf("Привет, я - Гена, твой персональный помощник в решении различных задач.\n");
@@ -22,23 +22,23 @@ int hello_sq()
 }
 
 
-int want_sq()
+int WantSq()
 {
     printf("Хочешь решить уравнение? (Yes/No)\n");
     return 0;
 }
 
 
-void clear_term()
+void ClearTerm()
 {
     int symbol = 0;
     while (((symbol = getchar()) != EOF) && (symbol != '\n'));
 }
 
 
-int take_massage()
+int TakeMassage()
 {
-    clear_term();
+    ClearTerm();
 
     char current = getchar();
 
@@ -78,14 +78,14 @@ int take_massage()
 }
 
 
-int please()
+int Please()
 {
     printf("Ну введи пж, я хочу быть полезным...\n");
-    int temp = take_massage();
+    int temp = TakeMassage();
     if (temp == 2)
     {
         printf("Ну пж\n");
-        int temp = take_massage();
+        int temp = TakeMassage();
         switch (temp)
         {
         case ERROR: return 0; break;
@@ -102,36 +102,70 @@ int please()
 }
 
 
-void not_correct_input()
+void NotCorrectInput()
 {
-    clear_term();
+    ClearTerm();
     printf("\nОшибка ввода. Введенные символы не являются числом \n");
     printf("или число больше допустимого значения.\n");
     printf("Введите коэффициент заново: ");
 }
 
-int want_another_one()
+int WantAnotherOne()
 {
     GREEN
     printf("Хочешь продолжить?\n");
-    return take_massage();
+    return TakeMassage();
 }
 
-void output(int error, struct roots *x1_x2)
+void Output(int error, struct Roots *x1_x2)
 {
     assert (x1_x2);
     RED
     switch(error)
-    {  // output result - выводим результат в нужном виде (a, b , c, x1, x2)
-        case NO_ERROR                : GREEN print_sqeq_roots(x1_x2);                               break;
+    {  // Output result - выводим результат в нужном виде (a, b , c, x1, x2)
+        case NO_ERROR                : GREEN PrintSqEqRoots(x1_x2);                                 break;
         case DIVISION_BY_ZERO        : printf("Деление на ноль\n");                                 break;
-        case DISCRIMINANT_LOWER_ZERO : printf("Дискриминант меньше нуля\n");                        break;
         case INCORRECT_INPUT         : printf("Некорректный ввод\n");                               break;
-        case X_IS_ANY_NUMBER         : printf("Икс - любое число\n");                               break;
-        case THERES_NO_SOLVES        : printf("Нет решений\n");                                     break;
-        case LIN_EQ                  : printf("Singe root: %lg\nЛинейное уравнение\n", x1_x2->x1);  break;
         case USER_IS_BYAKA           : printf("Ты бяка.\n");                                        break;
     }
     DEF_COL
     return;
+}
+
+
+int UserChoice()
+{
+    int res = 0;
+    int error = 0;
+    struct Coefficient coef;
+    struct Roots x1_x2;
+    do
+    {
+        WantSq();
+        res = TakeMassage();
+        ClearTerm();
+        switch(res)
+        {
+            case YES:
+                error = 0;
+                error = InputAbcCoef(&coef); // input a,b,c - получаем массив аргументов
+                if (error == 0) error = SqEqSolve(&coef, &x1_x2);
+                Output(error, &x1_x2);
+                break;
+            case NO:
+                res = Please();
+                if (res == YES) break;
+                else
+                {
+                    error = USER_IS_BYAKA;
+                    Output(error, &x1_x2);
+                    break;
+                }
+            case ERROR:
+                error = INCORRECT_INPUT;
+                Output(error, &x1_x2);
+                return 0;
+        }
+    } while (res == YES);
+    return 0;
 }

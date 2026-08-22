@@ -4,20 +4,35 @@
 #endif
 
 // погрешность приравнивания к нулю
-const double EPS = (0.000000000000000001);
+const double EPS = (0.000000000000000000001);
 
-int sq_eq_solve(struct coefficient *coef, struct roots *result)
+int SqEqSolve(struct Coefficient *coef, struct Roots *result)
 {
     assert (coef);
     assert (result);
 
     // проверки
-    if (equal(coef->a, 0) && equal(coef->b, 0) && equal(coef->c, 0)) return X_IS_ANY_NUMBER;
-    else if (equal(coef->a, 0) && equal(coef->b, 0)) return THERES_NO_SOLVES;
-    else if (equal(coef->a, 0))
+    if (Equal(coef->a, 0))
     {
-        lin_eq_solve(coef, result);
-        return LIN_EQ;
+        if (Equal(coef->b, 0))
+        {
+            if (Equal(coef->c, 0))
+            {
+                result->count_roots = INF_SOLUTIONS;
+                return 0;
+            }
+            else
+            {
+            result->count_roots = NO_SOLUTIONS;
+            return 0;
+            }
+        }
+
+        else
+        {
+            LinEqSolve(coef, result);
+            return 0;
+        }
     }
 
     double discriminant = (coef->b * coef->b) - (4 * coef->a * coef->c);
@@ -25,7 +40,8 @@ int sq_eq_solve(struct coefficient *coef, struct roots *result)
     {
         // printf("Discriminant < 0, roots not defined\n");
         // result[x1] = result[x2] = NULL;
-        return DISCRIMINANT_LOWER_ZERO;
+        result->count_roots = NO_SOLUTIONS;
+        return 0;
     }
     double sqrt_disc = sqrt(discriminant);
 
@@ -36,38 +52,51 @@ int sq_eq_solve(struct coefficient *coef, struct roots *result)
 }
 
 
-int lin_eq_solve(struct coefficient *coef, struct roots *result)
+int LinEqSolve(struct Coefficient *coef, struct Roots *result)
 {
     assert (result);
     assert (coef);
-    if (coef->b == 0) return DIVISION_BY_ZERO;
-
-    result->x1 = result->x2 = (- coef->c) / coef->b;
+    if (coef->b == 0)
+    {
+        result->count_roots = NO_SOLUTIONS;
+        return 0;
+    }
+    result->count_roots = ONE_SOLUTION;
+    result->x1 = (- coef->c) / coef->b;
     return 0;
 }
 
 
-void print_sqeq_roots(struct roots *result)
+void PrintSqEqRoots(struct Roots *result)
 {
     assert (result);
     GREEN
-    if (result->x1 == result->x2)//(equal(result->x1, result->x2, EPS))
+    if (result->count_roots == ONE_SOLUTION)
     {
         printf("Единственный корень: %lf\n", result->x1);
         return;
     }
-    else
+    else if (result->count_roots == TWO_SOLUTIONS)
     {
         printf("Два корня: x1 = %lf, x2 = %lf\n", result->x1, result->x2);
+    }
+    else if (result->count_roots == INF_SOLUTIONS)
+    {
+        printf("Решением является любое число\n");
+    }
+    else if (result->count_roots == NO_SOLUTIONS)
+    {
+        printf("Нет решений\n");
     }
     return;
     DEF_COL
 }
 
 
-int input_abc_coef(struct coefficient *coef)
+int InputAbcCoef(struct Coefficient *coef)
 {
     assert (coef);
+
     double coefs[3] = {0};
     char name[] = "abc";
     GREEN
@@ -79,7 +108,7 @@ int input_abc_coef(struct coefficient *coef)
         while ((scanf("%lf", &(coefs[i])) != 1) && (scanf("%c", &temp) == 1))
         {
             // return incorrect_input;
-            not_correct_input();
+            NotCorrectInput();
         }
     }
     coef->a = coefs[0];
@@ -89,7 +118,7 @@ int input_abc_coef(struct coefficient *coef)
     DEF_COL
 }
 
-int equal(double a, double b)
+int Equal(double a, double b)
 {
     if (fabs(a - b) < EPS) return 1;
     else return 0;
