@@ -135,37 +135,37 @@ void Output(int error, struct Roots *x1_x2)
 
 int UserChoice()
 {
-    int res = 0;
+    int user_reply = 0;
     int error = 0;
     struct Coefficient coef;
-    struct Roots x1_x2;
+    struct Roots roots_by_function;
     do
     {
         WantSq();
-        res = TakeMassage();
+        user_reply = TakeMassage();
         ClearTerm();
-        switch(res)
+        switch(user_reply)
         {
             case YES:
                 error = 0;
                 error = InputAbcCoef(&coef); // input a,b,c - получаем массив аргументов
-                if (error == 0) error = SqEqSolve(&coef, &x1_x2);
-                Output(error, &x1_x2);
+                if (error == 0) error = SqEqSolve(&coef, &roots_by_function);
+                Output(error, &roots_by_function);
                 break;
             case NO:
-                res = Please();
-                if (res == YES) break;
+                user_reply = Please();
+                if (user_reply == YES) break;
                 else
                 {
                     error = USER_IS_BYAKA;
-                    Output(error, &x1_x2);
+                    Output(error, &roots_by_function);
                     break;
                 }
             case ERROR:
                 error = INCORRECT_INPUT;
-                Output(error, &x1_x2);
+                Output(error, &roots_by_function);
                 return 0;
         }
-    } while (res == YES);
+    } while (user_reply == YES);
     return 0;
 }

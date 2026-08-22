@@ -7,6 +7,8 @@
 #include "math.cpp"
 #include "Tests.cpp"
 
+
+// TODO arg_c, arg_v, запуск тестов по необходимости
 int main()
 {
     UnitestSq(TestSq);

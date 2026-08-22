@@ -11,6 +11,7 @@ int SqEqSolve(struct Coefficient *coef, struct Roots *result)
     assert (coef);
     assert (result);
 
+    result->count_roots = 2;
     // проверки
     if (Equal(coef->a, 0))
     {
@@ -69,6 +70,7 @@ int LinEqSolve(struct Coefficient *coef, struct Roots *result)
 
 void PrintSqEqRoots(struct Roots *result)
 {
+// TODO switch
     assert (result);
     GREEN
     if (result->count_roots == ONE_SOLUTION)
