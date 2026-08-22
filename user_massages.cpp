@@ -1,9 +1,7 @@
-#include <stdio.h>
-
-#define RED printf("\n\x1b[31m");
-#define YELLOW printf("\x1b[33m");
-#define GREEN printf("\x1b[32m");
-#define DEF_COL printf("\x1b[0m");
+#ifndef sqeq
+#define sqeq
+#include "sqeq.h"
+#endif
 
 enum USER_CHOICE
 {
@@ -46,6 +44,8 @@ int take_massage()
 
     if (current == 'd' || current == 'D' || current == 'Y' || current == 'y')
     {
+        SKIP_YES
+
         char current = getchar();
         if (current == 'a' || current == 'A')
         {
@@ -62,6 +62,8 @@ int take_massage()
 
     else if (current == 'N' || current == 'n')
     {
+        SKIP_NO
+
         char current = getchar();
         if (current == 'o' || current == 'O')
             return NO;
@@ -115,3 +117,21 @@ int want_another_one()
     return take_massage();
 }
 
+void output(int error, struct roots *x1_x2)
+{
+    assert (x1_x2);
+    RED
+    switch(error)
+    {  // output result - выводим результат в нужном виде (a, b , c, x1, x2)
+        case NO_ERROR                : GREEN print_sqeq_roots(x1_x2);                               break;
+        case DIVISION_BY_ZERO        : printf("Деление на ноль\n");                                 break;
+        case DISCRIMINANT_LOWER_ZERO : printf("Дискриминант меньше нуля\n");                        break;
+        case INCORRECT_INPUT         : printf("Некорректный ввод\n");                               break;
+        case X_IS_ANY_NUMBER         : printf("Икс - любое число\n");                               break;
+        case THERES_NO_SOLVES        : printf("Нет решений\n");                                     break;
+        case LIN_EQ                  : printf("Singe root: %lg\nЛинейное уравнение\n", x1_x2->x1);  break;
+        case USER_IS_BYAKA           : printf("Ты бяка.\n");                                        break;
+    }
+    DEF_COL
+    return;
+}
