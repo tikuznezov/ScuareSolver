@@ -38,9 +38,15 @@ void ClearTerm()
 
 int TakeMassage()
 {
-    ClearTerm();
 
     char current = getchar();
+
+    char current_input[10] = {};
+
+
+    scanf("%s", current_input);
+
+    // strcmp(current_input, "yes");
 
     if (current == 'd' || current == 'D' || current == 'Y' || current == 'y')
     {

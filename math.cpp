@@ -49,6 +49,9 @@ int SqEqSolve(struct Coefficient *coef, struct Roots *result)
     result->x1 = ((-coef->b) + sqrt_disc) / (2 * coef->a);
     result->x2 = ((-coef->b) - sqrt_disc) / (2 * coef->a);
 
+    if (Equal(result->x1, result->x2))
+        result->count_roots = 1;
+
     return 0;
 }
 
@@ -70,28 +73,30 @@ int LinEqSolve(struct Coefficient *coef, struct Roots *result)
 
 void PrintSqEqRoots(struct Roots *result)
 {
-// TODO switch
     assert (result);
     GREEN
-    if (result->count_roots == ONE_SOLUTION)
+
+    switch (result->count_roots)
     {
+    case ONE_SOLUTION:
         printf("Единственный корень: %lf\n", result->x1);
+        DEF_COL
+        return;
+    case TWO_SOLUTIONS:
+        printf("Два корня: x1 = %lf, x2 = %lf\n", result->x1, result->x2);
+        DEF_COL
+        return;
+    case INF_SOLUTIONS:
+        printf("Решением является любое число\n");
+        DEF_COL
+        return;
+    case NO_SOLUTIONS:
+        printf("Нет решений\n");
+        DEF_COL
         return;
     }
-    else if (result->count_roots == TWO_SOLUTIONS)
-    {
-        printf("Два корня: x1 = %lf, x2 = %lf\n", result->x1, result->x2);
-    }
-    else if (result->count_roots == INF_SOLUTIONS)
-    {
-        printf("Решением является любое число\n");
-    }
-    else if (result->count_roots == NO_SOLUTIONS)
-    {
-        printf("Нет решений\n");
-    }
-    return;
     DEF_COL
+    return;
 }
 
 
