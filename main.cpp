@@ -8,15 +8,21 @@
 #include "Tests.cpp"
 
 
-// TODO arg_c, arg_v, запуск тестов по необходимости
 // TODO stress test
 // TODO documentation
 // TODO perror input from file
 
 
-int main()
+int main(int arg_c, char *arg_v[])
 {
-    UnitestSq(RunTestSq);
-    HelloSq();
-    UserChoice();
+    for (int i = 0; i < arg_c; i++)
+    {
+        if ((strcmp(arg_v[i], "t")) == 0)
+            UnitestSq(RunTestSq);
+    }
+
+    //HelloSq();
+    //UserChoice();
+
+    RED printf("Снять комментирование\n");
 }
