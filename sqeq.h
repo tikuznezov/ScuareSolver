@@ -3,15 +3,19 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
 
 
-#define RED printf("\n\x1b[31m");
+#define RED printf("\x1b[31m");
 #define YELLOW printf("\x1b[33m");
 #define GREEN printf("\x1b[32m");
 #define DEF_COL printf("\x1b[0m");
 
 #define MAX(a, b) ((a > b) ? a : b)
 #define MIN(a, b) ((a < b) ? a : b)
+
+#define MAX_LINE 100
+#define MAX_NUM_OF_EQ 10
 
 
 // корни уравнения
@@ -111,3 +115,6 @@ void PrintCoefs(Coefficient *);
 
 //выводит корни и их количество
 void PrintRoots(Roots *);
+
+// Решает уравнения из файла
+int SolveFromFile(FILE *);

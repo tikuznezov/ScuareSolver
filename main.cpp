@@ -7,7 +7,6 @@
 #include "math.cpp"
 #include "Tests.cpp"
 
-
 // TODO stress test
 // TODO documentation
 // TODO perror input from file
@@ -19,6 +18,18 @@ int main(int arg_c, char *arg_v[])
     {
         if ((strcmp(arg_v[i], "t")) == 0)
             UnitestSq(RunTestSq);
+        if ((strcmp(arg_v[i], "f")) == 0)
+        {
+            FILE *file = fopen(arg_v[++i], "r");
+            if (file == NULL)
+            {
+                perror("Ошибка чтения файла");
+                return 1;
+            }
+
+            SolveFromFile(file);
+        }
+
     }
 
     //HelloSq();
