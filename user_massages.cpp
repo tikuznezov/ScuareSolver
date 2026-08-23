@@ -17,7 +17,7 @@ enum USER_CHOICE
 int HelloSq()
 {
     YELLOW
-    printf("Привет, я - Гена, твой персональный помощник в решении различных задач.\n");
+    printf("\nПривет, я - Гена, твой персональный помощник в решении различных задач.\n");
     printf("К сожалению, у моих разработчиков нет денег, так что пока я умею только решать квадратные уравнения\n");
     printf("И воспринимаю только латинские буквы((\n");
     return 0;
@@ -217,4 +217,17 @@ int InputAbcCoef(Coefficient *coef)
     coef->c = coefs[2];
     return 0;
     DEF_COL
+}
+
+
+// выводит корни и количество решений
+void PrintCoefs(Coefficient *coef)
+{
+    printf("a = %lf, b = %lf, c = %lf\n", coef->a, coef->b, coef->c);
+}
+
+//выводит корни и их количество
+void PrintRoots(Roots *roots)
+{
+    printf("Count of roots: %d; Roots: x1 = %12.3lf, x2 = %12.3lf\n", roots->count_roots, roots->x1, roots->x2);
 }

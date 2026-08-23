@@ -105,3 +105,9 @@ int RunTestSq(Coefficient coef, Roots x12, int *error);
 
 // Временная вторая версия получения сообщения
 int TakeMassage_1();
+
+// выводит корни и количество решений
+void PrintCoefs(Coefficient *);
+
+//выводит корни и их количество
+void PrintRoots(Roots *);
