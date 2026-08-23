@@ -9,9 +9,14 @@
 
 
 // TODO arg_c, arg_v, запуск тестов по необходимости
+// TODO stress test
+// TODO documentation
+// TODO perror input from file
+
+
 int main()
 {
-    UnitestSq(TestSq);
+    UnitestSq(RunTestSq);
     HelloSq();
     UserChoice();
 }

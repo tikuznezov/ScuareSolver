@@ -3,13 +3,15 @@
 #include "sqeq.h"
 #endif
 
+#define MAX_LEN_INPUT_MASSAGE 20
+#define HOW_MANY_SYMBOLS_READ 1
+
 enum USER_CHOICE
 {
     ERROR,
     YES,
     NO
 };
-
 
 
 int HelloSq()
@@ -21,69 +23,69 @@ int HelloSq()
     return 0;
 }
 
-
+// спрашивает, хочет ли пользователь решить уравнение
 int WantSq()
 {
-    printf("Хочешь решить уравнение? (Yes/No)\n");
+    printf("Хочешь решить уравнение? (yes/no)\n");
     return 0;
 }
 
-
+// очищает ввод терминала
 void ClearTerm()
 {
     int symbol = 0;
     while (((symbol = getchar()) != EOF) && (symbol != '\n'));
 }
 
+// // считывает ввод и возвращает YES NO ERROR
+// int TakeMassage_1() // прошлая версия
+// {
+//
+//     char current = getchar();
+//
+//     char current_input[10] = {};
+//
+//
+//     scanf("%s", current_input);
+//
+//     // strcmp(current_input, "yes");
+//
+//     if (current == 'd' || current == 'D' || current == 'Y' || current == 'y')
+//     {
+//         SKIP_YES
+//
+//         char current = getchar();
+//         if (current == 'a' || current == 'A')
+//         {
+//             printf("Оу, вы из Англии!\n");
+//             return YES;
+//         }
+//         else if (current == 'e' || current == 'E')
+//         {
+//             char current = getchar();
+//             if (current == 's' || current == 'S')
+//                 return YES;
+//         }
+//     }
+//
+//     else if (current == 'N' || current == 'n')
+//     {
+//         SKIP_NO
+//
+//         char current = getchar();
+//         if (current == 'o' || current == 'O')
+//             return NO;
+//         else if (current == 'e' || current == 'E')
+//         {
+//             current = getchar();
+//             if (current == 't' || current == 'T')
+//                 return NO;
+//         }
+//     }
+//     return ERROR;
+// }
 
-int TakeMassage()
-{
-
-    char current = getchar();
-
-    char current_input[10] = {};
-
-
-    scanf("%s", current_input);
-
-    // strcmp(current_input, "yes");
-
-    if (current == 'd' || current == 'D' || current == 'Y' || current == 'y')
-    {
-        SKIP_YES
-
-        char current = getchar();
-        if (current == 'a' || current == 'A')
-        {
-            printf("Оу, вы из Англии!\n");
-            return YES;
-        }
-        else if (current == 'e' || current == 'E')
-        {
-            char current = getchar();
-            if (current == 's' || current == 'S')
-                return YES;
-        }
-    }
-
-    else if (current == 'N' || current == 'n')
-    {
-        SKIP_NO
-
-        char current = getchar();
-        if (current == 'o' || current == 'O')
-            return NO;
-        else if (current == 'e' || current == 'E')
-        {
-            current = getchar();
-            if (current == 't' || current == 'T')
-                return NO;
-        }
-    }
-    return ERROR;
-}
-
-
+// упрашивает решить уравнение, вызывает TakeMassage
 int Please()
 {
     printf("Ну введи пж, я хочу быть полезным...\n");
@@ -107,7 +109,7 @@ int Please()
     return 0;
 }
 
-
+// Вывод сообщение о некорректном вводе, вызывает ClearTerm
 void NotCorrectInput()
 {
     ClearTerm();
@@ -116,6 +118,7 @@ void NotCorrectInput()
     printf("Введите коэффициент заново: ");
 }
 
+// Спрашивает, хочет ли пользователь решить еще одно уравнение, вызывает TakeMassage
 int WantAnotherOne()
 {
     GREEN
@@ -123,7 +126,8 @@ int WantAnotherOne()
     return TakeMassage();
 }
 
-void Output(int error, struct Roots *x1_x2)
+// Считывает ошибки, если их нет, вызывает PrintSqEqRoots, иначе выводит сообщение о ошибке
+void Output(int error, Roots *x1_x2)
 {
     assert (x1_x2);
     RED
@@ -138,13 +142,14 @@ void Output(int error, struct Roots *x1_x2)
     return;
 }
 
-
+// Предлагает пользователю решить уравнение, если он согласен, решает и выводит ответ или ошибку
 int UserChoice()
 {
     int user_reply = 0;
     int error = 0;
-    struct Coefficient coef;
-    struct Roots roots_by_function;
+    Coefficient coef;
+    Roots roots_by_function;
+
     do
     {
         WantSq();
@@ -174,4 +179,42 @@ int UserChoice()
         }
     } while (user_reply == YES);
     return 0;
+}
+
+// считывает ввод и возвращает YES NO ERROR
+int TakeMassage()
+{
+    char cerrent_input[MAX_LEN_INPUT_MASSAGE];
+    scanf("%s", cerrent_input);
+    if (strncmp(cerrent_input, "yes", HOW_MANY_SYMBOLS_READ) == 0)
+        return YES;
+    else if (strncmp(cerrent_input, "no", HOW_MANY_SYMBOLS_READ) == 0)
+        return NO;
+    return ERROR;
+}
+
+
+int InputAbcCoef(Coefficient *coef)
+{
+    assert (coef);
+
+    double coefs[3] = {0};
+    char name[] = "abc";
+    GREEN
+    printf("Введите коэффициенты квадратного уравнения: \n");
+    char temp;
+    for (int i = 0; i < 3; i++)
+    {
+        printf("%c = ", name[i]);
+        while ((scanf("%lf", &(coefs[i])) != 1) || ((scanf("%c", &temp) == 1) && (temp != '\n')))
+        {
+            // return incorrect_input;
+            NotCorrectInput();
+        }
+    }
+    coef->a = coefs[0];
+    coef->b = coefs[1];
+    coef->c = coefs[2];
+    return 0;
+    DEF_COL
 }

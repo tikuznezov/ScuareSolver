@@ -4,9 +4,9 @@
 #endif
 
 // погрешность приравнивания к нулю
-const double EPS = (0.000000000000000000001);
+const double EPS = (0.0000000000001);
 
-int SqEqSolve(struct Coefficient *coef, struct Roots *result)
+int SqEqSolve(Coefficient *coef, Roots *result)
 {
     assert (coef);
     assert (result);
@@ -22,20 +22,21 @@ int SqEqSolve(struct Coefficient *coef, struct Roots *result)
                 result->count_roots = INF_SOLUTIONS;
                 return 0;
             }
-            else
+            else // с != 0:
             {
             result->count_roots = NO_SOLUTIONS;
             return 0;
             }
         }
 
-        else
+        else // b != 0:
         {
             LinEqSolve(coef, result);
             return 0;
         }
     }
 
+    // a != 0
     double discriminant = (coef->b * coef->b) - (4 * coef->a * coef->c);
     if (discriminant < 0) // проверка, что дискриминант положительный
     {
@@ -50,13 +51,15 @@ int SqEqSolve(struct Coefficient *coef, struct Roots *result)
     result->x2 = ((-coef->b) - sqrt_disc) / (2 * coef->a);
 
     if (Equal(result->x1, result->x2))
-        result->count_roots = 1;
-
+    {
+        result->count_roots = 1; result->x2 = NAN;
+        result->count_roots = ONE_SOLUTION;
+    }
     return 0;
 }
 
 
-int LinEqSolve(struct Coefficient *coef, struct Roots *result)
+int LinEqSolve(Coefficient *coef, Roots *result)
 {
     assert (result);
     assert (coef);
@@ -71,7 +74,7 @@ int LinEqSolve(struct Coefficient *coef, struct Roots *result)
 }
 
 
-void PrintSqEqRoots(struct Roots *result)
+void PrintSqEqRoots(Roots *result)
 {
     assert (result);
     GREEN
@@ -100,33 +103,7 @@ void PrintSqEqRoots(struct Roots *result)
 }
 
 
-int InputAbcCoef(struct Coefficient *coef)
-{
-    assert (coef);
-
-    double coefs[3] = {0};
-    char name[] = "abc";
-    GREEN
-    printf("Введите коэффициенты квадратного уравнения: \n");
-    char temp;
-    for (int i = 0; i < 3; i++)
-    {
-        printf("%c = ", name[i]);
-        while ((scanf("%lf", &(coefs[i])) != 1) && (scanf("%c", &temp) == 1))
-        {
-            // return incorrect_input;
-            NotCorrectInput();
-        }
-    }
-    coef->a = coefs[0];
-    coef->b = coefs[1];
-    coef->c = coefs[2];
-    return 0;
-    DEF_COL
-}
-
 int Equal(double a, double b)
 {
-    if (fabs(a - b) < EPS) return 1;
-    else return 0;
+    return (fabs(a - b) < EPS);
 }
