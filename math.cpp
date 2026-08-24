@@ -3,9 +3,12 @@
 #include "sqeq.h"
 #endif
 
-// погрешность приравнивания к нулю
-const double EPS = (0.0000000000001);
+#define TEST_ERROR
 
+// погрешность приравнивания к нулю
+const double EPS = (0.00000001);
+
+// решает квадратное уравнение
 int SqEqSolve(Coefficient *coef, Roots *result)
 {
     assert (coef);
@@ -28,7 +31,6 @@ int SqEqSolve(Coefficient *coef, Roots *result)
             return 0;
             }
         }
-
         else // b != 0:
         {
             LinEqSolve(coef, result);
@@ -47,7 +49,7 @@ int SqEqSolve(Coefficient *coef, Roots *result)
     }
     double sqrt_disc = sqrt(discriminant);
 
-    result->x1 = ((-coef->b) + sqrt_disc) / (2 * coef->a);
+    result->x1 = ((-coef->b) + sqrt_disc) / (2 * coef->a TEST_ERROR);
     result->x2 = ((-coef->b) - sqrt_disc) / (2 * coef->a);
 
     if (Equal(result->x1, result->x2))
@@ -85,19 +87,23 @@ void PrintSqEqRoots(Roots *result)
         printf("Единственный корень: %lf\n", result->x1);
         DEF_COL
         return;
+
     case TWO_SOLUTIONS:
         printf("Два корня: x1 = %lf, x2 = %lf\n", result->x1, result->x2);
         DEF_COL
         return;
+
     case INF_SOLUTIONS:
         printf("Решением является любое число\n");
         DEF_COL
         return;
+
     case NO_SOLUTIONS:
         printf("Нет решений\n");
         DEF_COL
         return;
     }
+
     DEF_COL
     return;
 }
@@ -108,7 +114,7 @@ int Equal(double a, double b)
     return (fabs(a - b) < EPS);
 }
 
-
+// решает уравнения по коэффициентам из уравнений
 int SolveFromFile(FILE *file)
 {
     int max_read_line = MAX_LINE;
@@ -128,15 +134,16 @@ int SolveFromFile(FILE *file)
         error = SqEqSolve(&coef_from_file, &roots_from_file);
 
         if (check_eof == EOF)
+        {
             return 0;
-
+            break;
+        }
         else if (error != 0)
         {
             Output(error, &roots_from_file);
             return 1;
             break;
         }
-
         else
         {
             // Выводим коэффициенты
@@ -146,4 +153,57 @@ int SolveFromFile(FILE *file)
         }
     }
     return 0;
+}
+
+// проверяет верны ли корни
+int CheckRoots(Coefficient *coef, Roots *roots)
+{
+    switch (roots->count_roots)
+    {
+        case TWO_SOLUTIONS:
+        {
+            double y1 = FindFuncValue(coef, roots->x1);
+            double y2 = FindFuncValue(coef, roots->x2);
+
+            if (Equal(y1, 0) && Equal(y2, 0))
+                return 0;
+            else
+                return 1;
+        }
+
+        case ONE_SOLUTION:
+        {
+            double y1 = FindFuncValue(coef, roots->x1);
+
+            if (Equal(y1, 0))
+                return 0;
+            else
+                return 1;
+        }
+
+        case INF_SOLUTIONS:
+        {
+            if (roots->count_roots == INF_SOLUTIONS)
+                return 0;
+            else
+                return 1;
+        }
+
+        case NO_SOLUTIONS:
+        {
+            if (roots->count_roots == NO_SOLUTIONS)
+                return 0;
+            else
+                return 1;
+        }
+    }
+    return 1;
+}
+
+// вычисляет значение квадратного уравнения, принимает коэффициенты и значение x
+double FindFuncValue(Coefficient *coef, double x)
+{
+    double value = NAN;
+    value = coef->a * x * x + coef->b * x + coef->c;
+    return value;
 }

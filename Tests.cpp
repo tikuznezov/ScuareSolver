@@ -5,6 +5,7 @@
 
 #define SPEC_TESTS_NUM 5
 #define TEST_FAULT 0
+#define  CUT_RAND 10000
 
 struct TestData
 {
@@ -16,6 +17,18 @@ int CheckTwoSolutions(TestData *test_data, Roots *roots_by_function, int *test_n
 int CheckOneSolution(TestData *test_data, Roots *roots_by_function, int *test_num);
 int CheckNoSolutions(TestData *test_data, Roots *roots_by_function, int *test_num);
 int CheckInfSolutions(TestData *test_data, Roots *roots_by_function, int *test_num);
+
+// запускает тесты из внешнего файла
+int TestsFromFile(int (*test)(TestData *, int*), FILE *file);
+
+// запускает множество встроенных тестов
+int UnitestSq(int (*test)(TestData *, int*));
+
+// запускает тестирование квадратного уравнения
+int RunTestSq(TestData *test_data, int *test_num);
+
+// запускает тесты со случайными величинами
+int StressTest(int (*test)(TestData *, int*), int num_of_tests);
 
 
 // возвращает 1 если тест не пройден
@@ -77,7 +90,7 @@ int UnitestSq(int (*test)(TestData *, int*))
     int end = 0;
     int test_num = 0;
 
-    printf("\nЗапуск тестов\n");
+    printf("\nЗапуск системных тестов\n");
 
     TestData test_data[SPEC_TESTS_NUM] =
     {
@@ -193,5 +206,93 @@ int CheckInfSolutions(TestData *test_data, Roots *roots_by_function, int *test_n
         printf("Результат - "); PrintRoots(&test_data->roots);
         return 1;
     }
+    return 0;
+}
+
+
+int TestsFromFile(int (*test)(TestData *, int*), FILE *file)
+{
+    printf("Запуск тестов из указанного файла\n");
+
+    int max_read_line = MAX_LINE;
+    int error = 0;
+    char check_eof;
+
+    Coefficient coef_from_file = {};
+    Roots roots_from_file = {};
+
+    int num_of_eq = 0; // сколько уравнений считалось
+    while (num_of_eq < MAX_NUM_OF_TESTS)
+    {
+        // Получаем коэффициенты и считываем конец файла
+        check_eof = fscanf(file, "%lf; %lf; %lf", &coef_from_file.a, &coef_from_file.b, &coef_from_file.c);
+
+        // увеличиваем счетчик считанных уравнений
+        num_of_eq++;
+
+        // решаем уравнение, получаем ошибки
+        error = SqEqSolve(&coef_from_file, &roots_from_file);
+
+        if (check_eof == EOF)
+        {
+            return 0;
+            break;
+        }
+        else if (CheckRoots(&coef_from_file, &roots_from_file) != 0)
+        {
+            RED printf("Ошибка в тесте из файла номер %d \n", num_of_eq); DEF_COL
+            YELLOW
+            PrintCoefs(&coef_from_file);
+            PrintRoots(&roots_from_file);
+            DEF_COL
+        }
+        else if (error != 0)
+        {
+            Output(error, &roots_from_file);
+            return 1;
+            break;
+        }
+    }
+    printf("Тесты успешно пройдены\n");
+    return 0;
+}
+
+// Тесты с набором случайных коэффициентов
+int StressTest(int (*test)(TestData *, int*), int num_of_tests)
+{
+    printf("Запуск теста со случайными величинами\n");
+
+    int error = 0;
+    int current_num_of_test = 0;
+    srand(time(NULL));
+
+    while (current_num_of_test++ < num_of_tests)
+        {
+            Coefficient coef = {};
+            coef.a = rand() % CUT_RAND;
+            coef.b = rand() % CUT_RAND;
+            coef.c = rand() % CUT_RAND;
+
+            Roots roots = {};
+
+            error = SqEqSolve(&coef, &roots);
+            if (CheckRoots(&coef, &roots) != 0)
+            {
+                // TODO нужно ли указывать номер теста?
+                RED printf("Ошибка в тесте cо случайными величинами номер %d \n", current_num_of_test); DEF_COL
+                YELLOW
+                PrintCoefs(&coef);
+                PrintRoots(&roots);
+                DEF_COL
+            }
+            else if (error != 0)
+            {
+                Output(error, &roots);
+                return 1;
+                break;
+            }
+
+        }
+    printf("Тестирование завершено\n\n");
     return 0;
 }

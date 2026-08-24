@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
+#include <time.h>
 
 
 #define RED printf("\x1b[31m");
@@ -16,6 +17,7 @@
 
 #define MAX_LINE 100
 #define MAX_NUM_OF_EQ 10
+#define MAX_NUM_OF_TESTS 100
 
 
 // корни уравнения
@@ -91,8 +93,8 @@ int UserChoice();
 // принимает данные из ввода
 // если в начале стоит yes/no/da/net (можно заглавными)
 // возвращает YES = 1, NO = 2, ERROR = 0
-#define SKIP_YES return YES; // замена на yes/da на y/d
-#define SKIP_NO  return  NO; // замена на no/net на n/n
+// #define SKIP_YES return YES; // замена на yes/da на y/d
+// #define SKIP_NO  return  NO; // замена на no/net на n/n
 int TakeMassage();
 
 // упрашивает решить уравнение, вызывает take_massage
@@ -118,3 +120,15 @@ void PrintRoots(Roots *);
 
 // Решает уравнения из файла
 int SolveFromFile(FILE *);
+
+// проверяет параметры при запуске программы: запускает чтение из файла или диалог с пользователем
+int CheckRunParameters(int, char *);
+
+// выводит пользователю варианты запуска программы
+void WhatCanDoThisProgram();
+
+// проверяет является ли число корнем уравнения с заданными коэффициентами
+int CheckRoots(Coefficient *coef, Roots *roots);
+
+// вычисляет значение уравнения в точке x
+double FindFuncValue(Coefficient *coef, double x);
