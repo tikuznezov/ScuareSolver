@@ -6,7 +6,7 @@
 #define TEST_ERROR
 
 // погрешность приравнивания к нулю
-const double EPS = (0.00000001);
+const double EPS = (0.001);
 
 // решает квадратное уравнение
 int SqEqSolve(Coefficient *coef, Roots *result)
@@ -37,27 +37,7 @@ int SqEqSolve(Coefficient *coef, Roots *result)
             return 0;
         }
     }
-
-    // a != 0
-    double discriminant = (coef->b * coef->b) - (4 * coef->a * coef->c);
-    if (discriminant < 0) // проверка, что дискриминант положительный
-    {
-        // printf("Discriminant < 0, roots not defined\n");
-        // result[x1] = result[x2] = NULL;
-        result->count_roots = NO_SOLUTIONS;
-        return 0;
-    }
-    double sqrt_disc = sqrt(discriminant);
-
-    result->x1 = ((-coef->b) + sqrt_disc) / (2 * coef->a TEST_ERROR);
-    result->x2 = ((-coef->b) - sqrt_disc) / (2 * coef->a);
-
-    if (Equal(result->x1, result->x2))
-    {
-        result->count_roots = 1; result->x2 = NAN;
-        result->count_roots = ONE_SOLUTION;
-    }
-    return 0;
+    return StandardSqEqSolve(coef, result);
 }
 
 
@@ -85,23 +65,19 @@ void PrintSqEqRoots(Roots *result)
     {
     case ONE_SOLUTION:
         printf("Единственный корень: %lf\n", result->x1);
-        DEF_COL
-        return;
+        break;
 
     case TWO_SOLUTIONS:
         printf("Два корня: x1 = %lf, x2 = %lf\n", result->x1, result->x2);
-        DEF_COL
-        return;
+        break;
 
     case INF_SOLUTIONS:
         printf("Решением является любое число\n");
-        DEF_COL
-        return;
+        break;
 
     case NO_SOLUTIONS:
         printf("Нет решений\n");
-        DEF_COL
-        return;
+        break;
     }
 
     DEF_COL
@@ -156,7 +132,7 @@ int SolveFromFile(FILE *file)
 }
 
 // проверяет верны ли корни
-int CheckRoots(Coefficient *coef, Roots *roots)
+bool CheckRoots(Coefficient *coef, Roots *roots)
 {
     switch (roots->count_roots)
     {
@@ -206,4 +182,37 @@ double FindFuncValue(Coefficient *coef, double x)
     double value = NAN;
     value = coef->a * x * x + coef->b * x + coef->c;
     return value;
+}
+
+// находит корни многочлена 2 степени
+int StandardSqEqSolve(Coefficient *coef, Roots *result)
+{
+    assert(coef);
+    assert(result);
+
+    if (Equal(coef->a, 0))
+    {
+        Output(DIVISION_BY_ZERO, result);
+        return 1;
+    }
+    // a != 0
+    double discriminant = (coef->b * coef->b) - (4 * coef->a * coef->c);
+    if (discriminant < 0) // проверка, что дискриминант положительный
+    {
+        // printf("Discriminant < 0, roots not defined\n");
+        // result[x1] = result[x2] = NULL;
+        result->count_roots = NO_SOLUTIONS;
+        return 0;
+    }
+    double sqrt_disc = sqrt(discriminant);
+
+    result->x1 = ((-coef->b) + sqrt_disc) / (2 * coef->a TEST_ERROR);
+    result->x2 = ((-coef->b) - sqrt_disc) / (2 * coef->a);
+
+    if (Equal(result->x1, result->x2))
+    {
+        result->count_roots = 1; result->x2 = NAN;
+        result->count_roots = ONE_SOLUTION;
+    }
+    return 0;
 }

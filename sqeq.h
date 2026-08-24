@@ -5,6 +5,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <time.h>
+#include <stdbool.h>
 
 
 #define RED printf("\x1b[31m");
@@ -15,9 +16,9 @@
 #define MAX(a, b) ((a > b) ? a : b)
 #define MIN(a, b) ((a < b) ? a : b)
 
-#define MAX_LINE 100
-#define MAX_NUM_OF_EQ 10
-#define MAX_NUM_OF_TESTS 100
+const int MAX_LINE = 100;
+const int MAX_NUM_OF_EQ = 10;
+const int MAX_NUM_OF_TESTS = 100;
 
 
 // корни уравнения
@@ -128,7 +129,10 @@ int CheckRunParameters(int, char *);
 void WhatCanDoThisProgram();
 
 // проверяет является ли число корнем уравнения с заданными коэффициентами
-int CheckRoots(Coefficient *coef, Roots *roots);
+bool CheckRoots(Coefficient *coef, Roots *roots);
 
 // вычисляет значение уравнения в точке x
 double FindFuncValue(Coefficient *coef, double x);
+
+// находит корни многочлена 2 степени
+int StandardSqEqSolve(Coefficient *coef, Roots *result);
