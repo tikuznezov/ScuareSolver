@@ -1,7 +1,4 @@
-#ifndef sqeq
-#define sqeq
 #include "sqeq.h"
-#endif
 
 const int MAX_LEN_INPUT_MASSAGE = 20;
 const int HOW_MANY_SYMBOLS_READ = 1;

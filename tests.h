@@ -1,7 +1,7 @@
-#ifndef sqeq
-#define sqeq
 #include "sqeq.h"
-#endif
+
+#ifndef tests
+#define tests
 
 const int SPEC_TESTS_NUM = 5;
 const int TEST_FAULT = 0;
@@ -30,3 +30,4 @@ int RunTestSq(TestData *test_data, int *test_num);
 
 // запускает тесты со случайными величинами
 int StressTest(int (*test)(TestData *, int*), int num_of_tests);
+#endif

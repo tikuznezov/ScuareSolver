@@ -1,12 +1,6 @@
-#ifndef sqeq
-#define sqeq
 #include "sqeq.h"
-#endif
-
-#ifndef tests
-#define tests
 #include "tests.h"
-#endif
+
 
 // возвращает 1 если тест не пройден
 int RunTestSq(TestData *test_data, int *test_num)

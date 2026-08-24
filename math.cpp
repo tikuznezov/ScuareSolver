@@ -1,7 +1,4 @@
-#ifndef sqeq
-#define sqeq
 #include "sqeq.h"
-#endif
 
 #define TEST_ERROR
 

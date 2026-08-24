@@ -1,3 +1,7 @@
+#ifndef sqeq
+#define sqeq
+
+
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
@@ -136,3 +140,9 @@ double FindFuncValue(Coefficient *coef, double x);
 
 // находит корни многочлена 2 степени
 int StandardSqEqSolve(Coefficient *coef, Roots *result);
+
+// анализирует параметры main
+int CheckRunParameters(int, char**);
+
+
+#endif
