@@ -10,17 +10,19 @@
 #include <fcntl.h>
 #include <time.h>
 #include <stdbool.h>
+#include <sys/ioctl.h>
+
 
 
 #define RED printf("\x1b[31m");
 #define YELLOW printf("\x1b[33m");
 #define GREEN printf("\x1b[32m");
 #define DEF_COL printf("\x1b[0m");
+#define BLACKonWHITE printf("\x1b[30;47m");
 
 #define MAX(a, b) ((a > b) ? a : b)
 #define MIN(a, b) ((a < b) ? a : b)
 
-const int MAX_LINE = 100;
 const int MAX_NUM_OF_EQ = 10;
 const int MAX_NUM_OF_TESTS = 100;
 
@@ -93,7 +95,7 @@ int WantSq();
 void ClearTerm();
 
 // принимает выбор пользователя, если нужно, решает уравнение
-int UserChoice();
+int UserChoice(bool);
 
 // принимает данные из ввода
 // если в начале стоит yes/no/da/net (можно заглавными)
@@ -143,6 +145,14 @@ int StandardSqEqSolve(Coefficient *coef, Roots *result);
 
 // анализирует параметры main
 int CheckRunParameters(int, char**);
+
+// анализ параметров main
+int RP_SolveFromFile(int, char**, int *); // запуск решения из файла
+int RP_TestsFromFile(int, char**, int *); // запуск теста из файла
+int RP_StressTest(int, char**, int *); // запуск теста со случайными коэффициентами
+
+// рисует график функции
+int PrintFunc(double Func(Coefficient *, double), Coefficient *coef);
 
 
 #endif

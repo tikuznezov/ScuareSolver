@@ -140,7 +140,7 @@ void Output(int error, Roots *x1_x2)
 }
 
 // Предлагает пользователю решить уравнение, если он согласен, решает и выводит ответ или ошибку
-int UserChoice()
+int UserChoice(bool isprint)
 {
     int user_reply = 0;
     int error = 0;
@@ -158,8 +158,11 @@ int UserChoice()
                 error = 0;
                 error = InputAbcCoef(&coef); // input a,b,c - получаем массив аргументов
                 if (error == 0) error = SqEqSolve(&coef, &roots_by_function);
+                if (isprint == true)
+                    PrintFunc(FindFuncValue, &coef);
                 Output(error, &roots_by_function);
                 break;
+
             case NO:
                 user_reply = Please();
                 if (user_reply == YES) break;
@@ -169,6 +172,7 @@ int UserChoice()
                     Output(error, &roots_by_function);
                     break;
                 }
+
             case ERROR:
                 error = INCORRECT_INPUT;
                 Output(error, &roots_by_function);
@@ -236,12 +240,13 @@ void WhatCanDoThisProgram()
     printf("Вы запустили программу, которая предназначена для решения квадратных уравнений.\n\n");
     printf("Запустите программу заново и выберете действие: \n");
 
-    printf("Ввести коэффициенты вручную - после имени программы введите \"run_AI\" (\"-r\")\n");
+    printf("Ввести коэффициенты вручную - после имени программы введите \"run_AI\" (\"-r\") ->\n");
+    printf("-> и \"-pr\", если хотите вывести в терминал график функции\n");
     printf("Ввести данные из файла - введите \"-f\" \"путь к файлу\" \n");
     printf("Запустить встроенные тесты перед началом работы - введите \"st\" \n");
     printf("Запустить тесты из файла - введите \"-ft\" \"путь к файлу\" \n");
     printf("Запустить тесты со случайными величинами - введите \"-RT!\" \"путь к файлу\" \n");
 
     printf("\nПараметры из разных строк можно комбинировать в произвольном порядке.\n\n");
-
+    DEF_COL
 }

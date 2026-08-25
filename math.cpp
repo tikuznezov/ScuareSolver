@@ -90,7 +90,6 @@ int Equal(double a, double b)
 // решает уравнения по коэффициентам из уравнений
 int SolveFromFile(FILE *file)
 {
-    int max_read_line = MAX_LINE;
     int error = 0;
     char check_eof;
 

@@ -3,10 +3,13 @@
 #include "user_massages.cpp"
 #include "math.cpp"
 #include "tests.cpp"
+#include "Grath.cpp"
 #include "TermPar.cpp"
 
 
-void lol_kek(int argc, char *argv[]) {
+
+void lol_kek(int argc, char *argv[])
+{
     return;
 }
 

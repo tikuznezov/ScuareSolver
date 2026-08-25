@@ -5,7 +5,7 @@
 
 const int SPEC_TESTS_NUM = 5;
 const int TEST_FAULT = 0;
-const int CUT_RAND = 10000;
+const int CUT_RAND = 100000;
 
 // данные для тестирования
 struct TestData

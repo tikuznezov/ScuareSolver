@@ -96,6 +96,10 @@ int UnitestSq(int (*test)(TestData *, int*))
 
 int CheckTwoSolutions(TestData *test_data, Roots *roots_by_function, int *test_num)
 {
+    assert(test_data);
+    assert(roots_by_function);
+    assert(test_num);
+
     double ref_x1 = MIN(test_data->roots.x1, test_data->roots.x2);
     double ref_x2 = MAX(test_data->roots.x1, test_data->roots.x2);
     double x1     = MIN(roots_by_function->x1, roots_by_function->x2);
@@ -120,6 +124,10 @@ int CheckTwoSolutions(TestData *test_data, Roots *roots_by_function, int *test_n
 
 int CheckOneSolution(TestData *test_data, Roots *roots_by_function, int *test_num)
 {
+    assert(test_data);
+    assert(roots_by_function);
+    assert(test_num);
+
     double ref_x1 = test_data->roots.x1;
     double x1 = roots_by_function->x1;
 
@@ -139,6 +147,10 @@ int CheckOneSolution(TestData *test_data, Roots *roots_by_function, int *test_nu
 
 int CheckNoSolutions(TestData *test_data, Roots *roots_by_function, int *test_num)
 {
+    assert(test_data);
+    assert(roots_by_function);
+    assert(test_num);
+
     if (test_data->roots.count_roots == NO_SOLUTIONS)
     {
         GREEN
@@ -160,6 +172,10 @@ int CheckNoSolutions(TestData *test_data, Roots *roots_by_function, int *test_nu
 
 int CheckInfSolutions(TestData *test_data, Roots *roots_by_function, int *test_num)
 {
+    assert(test_data);
+    assert(roots_by_function);
+    assert(test_num);
+
     if (test_data->roots.count_roots == INF_SOLUTIONS)
     {
         GREEN
@@ -183,9 +199,11 @@ int CheckInfSolutions(TestData *test_data, Roots *roots_by_function, int *test_n
 
 int TestsFromFile(int (*test)(TestData *, int*), FILE *file)
 {
+    assert(file);
+    assert(test);
+
     printf("Запуск тестов из указанного файла\n");
 
-    int max_read_line = MAX_LINE;
     int error = 0;
     char check_eof;
 
@@ -231,6 +249,9 @@ int TestsFromFile(int (*test)(TestData *, int*), FILE *file)
 // Тесты с набором случайных коэффициентов
 int StressTest(int (*test)(TestData *, int*), int num_of_tests)
 {
+    assert(test);
+    assert(num_of_tests);
+
     printf("Запуск теста со случайными величинами\n");
 
     int error = 0;
