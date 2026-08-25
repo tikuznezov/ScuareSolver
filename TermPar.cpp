@@ -25,10 +25,11 @@ int CheckRunParameters(int argc, char** argv)
             {
                 HelloSq();
                 bool isprint = false;
-                if ((argc >= i + 1) && (strcmp(argv[i+1], "-pr")))// Прибавляем 1 тк нам нужен i+1 элемент
+                if ((argc >= i+1) && ((strcmp(argv[i+1], "-pr")) == 0))// Прибавляем 1 тк нам нужен i+1 элемент
                 {
+                    // printf("Вывод графика\n");
                     isprint = true;
-                    i++;
+                    ++i;
                 }
                 UserChoice(isprint);
             }

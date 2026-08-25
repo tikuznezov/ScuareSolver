@@ -154,5 +154,8 @@ int RP_StressTest(int, char**, int *); // запуск теста со случ�
 // рисует график функции
 int PrintFunc(double Func(Coefficient *, double), Coefficient *coef);
 
+// делает число нечетным, вычитая единицу, если оно четное
+int ToOdd(int x);
+
 
 #endif

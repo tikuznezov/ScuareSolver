@@ -6,12 +6,12 @@
 #include "Grath.cpp"
 #include "TermPar.cpp"
 
-
-
-void lol_kek(int argc, char *argv[])
-{
-    return;
-}
+// #define GG_VP 0
+//
+// void lol_kek(int argc, char *argv[])
+// {
+//     return;
+// }
 
 // TODO запуск конкретного теста ?
 // TODO doxygen documentation
@@ -20,10 +20,7 @@ void lol_kek(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+    // lol_kek(argc, argv);
     CheckRunParameters(argc-1, argv);
-
     return 0;
 }
-
-
-

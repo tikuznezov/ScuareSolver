@@ -170,6 +170,7 @@ int UserChoice(bool isprint)
                 {
                     error = USER_IS_BYAKA;
                     Output(error, &roots_by_function);
+                    ClearTerm();
                     break;
                 }
 

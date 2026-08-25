@@ -212,3 +212,12 @@ int StandardSqEqSolve(Coefficient *coef, Roots *result)
     }
     return 0;
 }
+
+// делает число нечетным, вычитая единицу, если оно четное
+int ToOdd(int x)
+{
+    if (x%2 == 0)
+        return x-1;
+    else
+        return x;
+}
