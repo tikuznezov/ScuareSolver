@@ -27,7 +27,7 @@ int PrintFunc(double Func(Coefficient *, double), Coefficient *coef) {
 
     double RESOLUTION = window.ws_row * 2; // количество проверяемых значений на один шаг по x
 
-    const int PRINTED_SCREEN_COUNT = 2; // количество экранов по вертикали, которое будет занимать график
+    const int PRINTED_SCREEN_COUNT = 1; // количество экранов по вертикали, которое будет занимать график
 
     Scale scale = ScaleGrath(coef, &window);
 
@@ -35,7 +35,7 @@ int PrintFunc(double Func(Coefficient *, double), Coefficient *coef) {
     BLACKonWHITE
     printf("График функции (%lg)*x^2 + (%lg)*x + (%lg)  \n", coef->a, coef->b, coef->c);
     RED
-    printf("y_scale = %lg:1, x_factor = %lg:1\n", scale.y_factor, scale.x_factor);
+    printf("y scale = %lg:1, x scale = %lg:1\n", scale.y_factor, scale.x_factor);
     DEF_COL
 
     // получение и стандартизация размеров поля
@@ -163,11 +163,13 @@ Scale ScaleGrath(Coefficient *coef, winsize *window)
         ext.y = (coef->a * ext.x*ext.x) + (coef->b * ext.x) + coef->c;
         double dist = Distance(ext, zero);
 
-        if ((dist * 2 > window->ws_row) or (dist * 2 > window->ws_col))
-        {
-            scale.y_factor = 4 * fabs(ext.y) / window->ws_row;
-            scale.x_factor = 8 * fabs(ext.x) / window->ws_col;
-        }
+        // if ((dist * 2 > window->ws_row) || (dist * 2 > window->ws_col))
+        // {
+        // if (Equal(ext.y, 0) == false)
+            scale.y_factor = 8 * fabs(ext.y+0.1) / window->ws_row / pow(fabs(coef->a), 0.5/log(fabs(coef->a))); // n отвечает за дальность отступа по координате от центра координат. 4 - не дальше 1/4 экрана, то есть не дальше половины координатной полуплоскости
+        // if (Equal(ext.x, 0) == false)
+            scale.x_factor = 8 * fabs(ext.x+0.1) / window->ws_col / pow(fabs(coef->a), 1/log(fabs(coef->a)));
+        // }
     }
 
     return scale;
