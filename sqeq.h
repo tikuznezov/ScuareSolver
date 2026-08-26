@@ -1,6 +1,5 @@
-#ifndef sqeq
-#define sqeq
-
+#ifndef _SQEQ
+#define _SQEQ
 
 #include <stdio.h>
 #include <math.h>
@@ -64,15 +63,6 @@ enum NUMBERS_OF_SOLUTION
 // получаем коэффициенты и проверяем внеслись ли значения в переменные
 int InputAbcCoef(Coefficient *coef);
 
-// выводит корни уравнения
-void PrintSqEqRoots(Roots *result);
-
-// решает уравнение получая массив с коэффициентами и массив для результата
-int SqEqSolve(Coefficient *coef, Roots *x1_x2);
-
-// решает уравнение
-int LinEqSolve(Coefficient *coef, Roots *x1_x2);
-
 // Вывод ошибки и очистка ввода
 void NotCorrectInput();
 
@@ -81,9 +71,6 @@ void NotCorrectInput();
 
 // switch и вывод результата
 void Output(int error, Roots *x1_x2);
-
-// приравнивает два числа с точностью eps
-int Equal(double a, double b);
 
 // выводит приветствие
 int HelloSq();
@@ -116,14 +103,8 @@ int WantAnotherOne();
 // проводит один тест вычисления корней квадратного уравнения
 int RunTestSq(Coefficient coef, Roots x12, int *error);
 
-// Временная вторая версия получения сообщения
-int TakeMassage_1();
-
 // выводит корни и количество решений
 void PrintCoefs(Coefficient *);
-
-//выводит корни и их количество
-void PrintRoots(Roots *);
 
 // Решает уравнения из файла
 int SolveFromFile(FILE *);
@@ -133,15 +114,6 @@ int CheckRunParameters(int, char *);
 
 // выводит пользователю варианты запуска программы
 void WhatCanDoThisProgram();
-
-// проверяет является ли число корнем уравнения с заданными коэффициентами
-bool CheckRoots(Coefficient *coef, Roots *roots);
-
-// вычисляет значение уравнения в точке x
-double FindFuncValue(Coefficient *coef, double x);
-
-// находит корни многочлена 2 степени
-int StandardSqEqSolve(Coefficient *coef, Roots *result);
 
 // анализирует параметры main
 int CheckRunParameters(int, char**);
@@ -156,6 +128,7 @@ int PrintFunc(double Func(Coefficient *, double), Coefficient *coef);
 
 // делает число нечетным, вычитая единицу, если оно четное
 int ToOdd(int x);
+
 
 
 #endif

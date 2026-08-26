@@ -1,6 +1,8 @@
 #include "sqeq.h"
 #include "tests.h"
 
+#include "sqeq.h"
+#include "math_sq.h"
 
 // возвращает 1 если тест не пройден
 int RunTestSq(TestData *test_data, int *test_num)
@@ -67,10 +69,10 @@ int UnitestSq(int (*test)(TestData *, int*))
     {
     //  {a,  b,  c, x1, x2, roots count}
         {.coef{.a =   1, .b =   2, .c =   1}, .roots{.x1 =  -1, .x2 =   0, ONE_SOLUTION}},
-        {.coef{.a =   0, .b =   0, .c =   2}, .roots{.x1 =   0, .x2 =   0, NO_SOLUTIONS}},
-        {.coef{.a =   0, .b =   0, .c =   0}, .roots{.x1 =   0, .x2 =   0, INF_SOLUTIONS}},
+        {.coef{.a =   0, .b =   0, .c =   2}, .roots{.x1 = NAN, .x2 = NAN, NO_SOLUTIONS}},
+        {.coef{.a =   0, .b =   0, .c =   0}, .roots{.x1 = NAN, .x2 = NAN, INF_SOLUTIONS}},
         {.coef{.a =   1, .b =   0, .c =  -1}, .roots{.x1 =  -1, .x2 =   1, TWO_SOLUTIONS}},
-        {.coef{.a = 0.1, .b =  32, .c =  33}, .roots{.x1 = 455, .x2 =  21, NO_SOLUTIONS}}
+        {.coef{.a =  31, .b =  32, .c =  33}, .roots{.x1 = NAN, .x2 = NAN, NO_SOLUTIONS}}
     };
 
     printf("Успешная инициализация данных для тестов\n\n");
@@ -205,7 +207,7 @@ int TestsFromFile(int (*test)(TestData *, int*), FILE *file)
     printf("Запуск тестов из указанного файла\n");
 
     int error = 0;
-    char check_eof;
+    int check_eof;
 
     Coefficient coef_from_file = {};
     Roots roots_from_file = {};

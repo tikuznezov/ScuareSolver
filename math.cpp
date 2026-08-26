@@ -1,4 +1,5 @@
 #include "sqeq.h"
+#include "math_sq.h"
 
 #define TEST_ERROR
 
@@ -42,7 +43,7 @@ int LinEqSolve(Coefficient *coef, Roots *result)
 {
     assert (result);
     assert (coef);
-    if (coef->b == 0)
+    if (Equal(coef->b, 0))
     {
         result->count_roots = NO_SOLUTIONS;
         return 0;
@@ -91,7 +92,7 @@ int Equal(double a, double b)
 int SolveFromFile(FILE *file)
 {
     int error = 0;
-    char check_eof;
+    int check_eof;
 
     Coefficient coef_from_file = {};
     Roots roots_from_file = {};
@@ -220,4 +221,13 @@ int ToOdd(int x)
         return x-1;
     else
         return x;
+}
+
+// вычисляет расстояние между точками
+double Distance(Point a, Point b)
+{
+    double dist = NAN;
+    dist = pow(a.x - b.x, 2) + pow(a.y - b.y, 2);
+    dist = pow((dist), 0.5);
+    return dist;
 }

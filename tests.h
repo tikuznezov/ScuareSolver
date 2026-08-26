@@ -1,7 +1,7 @@
-#include "sqeq.h"
+#ifndef _TESTS
+#define _TESTS
 
-#ifndef tests
-#define tests
+#include "sqeq.h"
 
 const int SPEC_TESTS_NUM = 5;
 const int TEST_FAULT = 0;

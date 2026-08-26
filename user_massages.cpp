@@ -1,4 +1,5 @@
 #include "sqeq.h"
+#include "math_sq.h"
 
 const int MAX_LEN_INPUT_MASSAGE = 20;
 const int HOW_MANY_SYMBOLS_READ = 1;
@@ -90,7 +91,7 @@ int Please()
     if (temp == 2)
     {
         printf("Ну пж\n");
-        int temp = TakeMassage();
+        temp = TakeMassage();
         switch (temp)
         {
         case ERROR: return 0; break;
