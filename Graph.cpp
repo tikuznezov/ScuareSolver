@@ -33,7 +33,8 @@ int PrintFunc(double Func(Coefficient *, double), Coefficient *coef) {
 
     // описание графика
     BLACKonWHITE
-    printf("График функции (%lg)*x^2 + (%lg)*x + (%lg)  ", coef->a, coef->b, coef->c);
+    printf("График функции (%lg)*x^2 + (%lg)*x + (%lg)  \n", coef->a, coef->b, coef->c);
+    RED
     printf("y_scale = %lg:1, x_factor = %lg:1\n", scale.y_factor, scale.x_factor);
     DEF_COL
 
@@ -143,19 +144,22 @@ Scale ScaleGrath(Coefficient *coef, winsize *window)
 
     if (Equal(coef->a, 0))
     {
-        double root = (- coef->c) / coef->b;
-        if ((abs(root) * 4) > window->ws_col) // если корень дальше четверти экрана от центра
-            scale.x_factor = (window->ws_col)/(root); // масштабируем график
+        if (Equal(coef->b, 0) == false)
+        {
+            double root = (- coef->c) / coef->b;
+            if ((abs(root) > window->ws_col)) // если корень дальше четверти экрана от центра
+                scale.x_factor = root/window->ws_col; // масштабируем график
+        }
 
-        if ((fabs(coef->c) * 4 > window->ws_row)) // если пересечение с Oy дальше четверти экрана от центра
-            scale.y_factor = window->ws_row/coef->c; // масштабируем Oy
+        if ((fabs(coef->c) > window->ws_row)) // если пересечение с Oy дальше четверти экрана от центра
+            scale.y_factor = 4 * coef->c/window->ws_row; // масштабируем Oy
     }
 
     else
     {
         Point ext = {};
         Point zero = {.x = 0, .y = 0};
-        ext.x = -coef->b / (2 * coef->a);
+        ext.x = -coef->b / (2 * coef->a) * sqrt(coef->c);
         ext.y = (coef->a * ext.x*ext.x) + (coef->b * ext.x) + coef->c;
         double dist = Distance(ext, zero);
 
