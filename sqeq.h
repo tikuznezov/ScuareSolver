@@ -12,21 +12,31 @@
 #include <sys/ioctl.h>
 
 
-
+//! Задает красный цвет текста
 #define RED printf("\x1b[31m");
+//! Задает желтый цвет текста
 #define YELLOW printf("\x1b[33m");
+//! Задает зеленый цвет текста
 #define GREEN printf("\x1b[32m");
+//! Задает белый цвет текста на черном фоне (по умолчанию)
 #define DEF_COL printf("\x1b[0m");
+//! Задает черный текст на белом фоне
 #define BLACKonWHITE printf("\x1b[30;47m");
 
 #define MAX(a, b) ((a > b) ? a : b)
 #define MIN(a, b) ((a < b) ? a : b)
 
-const int MAX_NUM_OF_EQ = 10;
-const int MAX_NUM_OF_TESTS = 100;
+//! Константа, ограничивающая максимальное количество уравнений в файле. Нужна, чтобы цикл while не был бесконечным
+const int MAX_NUM_OF_EQ_FROM_FILE = 100000;
+//! Константа, ограничивающая максимальное количество уравнений в файле для тестирования. Нужна, чтобы цикл while не был бесконечным
+const int MAX_NUM_OF_TESTS_FROM_FILE = 100000;
 
 
-// корни уравнения
+/**
+* @brief Структура, содержащая в себе корни уравнения и их количество.
+* @param x1 - первый корень уравнения (наименьший или единственный)
+* @param x2 - второй корень уравнения (наибольший или NAN)
+*/
 struct Roots
 {
     double x1 = NAN;
@@ -34,7 +44,12 @@ struct Roots
     int count_roots = 0;
 };
 
-// коэффициенты уравнения
+/**
+* @brief Структура, содержащая в себе коэффициенты уравнения
+* @param a - старший коэффициент
+* @param b - средний коэффициент
+* @param b - свободный коэффициент
+*/
 struct Coefficient
 {
     double a = 0.f;
@@ -42,7 +57,7 @@ struct Coefficient
     double c = 0.f;
 };
 
-
+//! Виды возможных ошибок
 enum TYPE_OF_ERROR
 {
     NO_ERROR,
@@ -51,6 +66,7 @@ enum TYPE_OF_ERROR
     USER_IS_BYAKA
 };
 
+//! Варианты количества действительных корней уравнения
 enum NUMBERS_OF_SOLUTION
 {
     INF_SOLUTIONS = -1,
@@ -59,76 +75,164 @@ enum NUMBERS_OF_SOLUTION
     TWO_SOLUTIONS = 2
 };
 
+//! структура для ввода, говорит о том, нужно ли продолжать считывать значения коэффициентов
+enum CONTINUE_TAKEING_COEFS
+{
+    BREAK = 17, // 17 - произвольный код ошибке, пока в разработке
+    CONTINUE = 1
+};
 
-// получаем коэффициенты и проверяем внеслись ли значения в переменные
+
+/**
+ * @brief Получает коэффициенты и проверяем внеслись ли значения в переменные
+ *
+ * @param coef - структура с коэффициентами функции
+ * @return int - возвращает код ошибки CONTINUE_TAKEING_COEFS
+ */
 int InputAbcCoef(Coefficient *coef);
 
-// Вывод ошибки и очистка ввода
-void NotCorrectInput();
+/**
+ * @brief Вывод ошибки и очистка ввода
+ *
+ * @param repeat_count - счетчик количества считанных ответов за время работы функции
+ * @return int - возвращает код ошибки CONTINUE_TAKEING_COEFS
+ */
+int NotCorrectInput(int repeat_count);
 
-// рисует график функции в терминале (пока не готова)
-//int show_grath(coefficient coef, int len_x, int len_y);
-
-// switch и вывод результата
+/**
+ * @brief Считывает код ошибки и выводит результат. Если код равен 0, выводит ответ.
+ *
+ * @param error - код текущей ошибки, выводит по нему информацию
+ * @param x1_x2 - структура с корнями уравнения и их количеством, идет на отображение пользователю
+ */
 void Output(int error, Roots *x1_x2);
 
-// выводит приветствие
-int HelloSq();
+/**
+ * @brief Выводит в терминал приветствие
+ */
+void HelloSq();
 
-// спрашивает, хочешь ли решить уравнение
-int WantSq();
+/**
+ * @brief Выводит сообщение с вопросом, хочет ли пользователь решить уравнение
+ */
+void WantSq();
 
-// очищает ввод
+/**
+ * @brief Очищает терминал
+ */
 void ClearTerm();
 
-// принимает выбор пользователя, если нужно, решает уравнение
-int UserChoice(bool);
+/**
+ * @brief Принимает выбор пользователя, если нужно, решает уравнение. Считывает bool, если 1, выводит в терминал график функции
+ *
+ * @param is_print_graph - отвечает за печать графика функции, если true, выводит график в терминал
+ * @return int - в разработке, должен возвращать код ошибки при диагностике
+ */
+int UserChoice(bool is_print_graph);
 
-// принимает данные из ввода
-// если в начале стоит yes/no/da/net (можно заглавными)
-// возвращает YES = 1, NO = 2, ERROR = 0
-// #define SKIP_YES return YES; // замена на yes/da на y/d
-// #define SKIP_NO  return  NO; // замена на no/net на n/n
+/**
+ * @brief Принимает данные из ввода, возвращает решение о необходимости решать уравнение: YES, NO, ERROR
+ *
+ * @return int - возвращает enum USER_CHOICE
+ */
 int TakeMassage();
 
-// упрашивает решить уравнение, вызывает take_massage
+/**
+ * @brief Упрашивает решить уравнение, вызывает take_massage
+ *
+ * @return int - возвращает enum USER_CHOICE
+ */
 int Please();
 
-// выводит сообщение о некорректном вводе
-void NotCorrectInput();
-
-// спрашивает, нужно ли решать следующее уравнение
+/**
+ * @brief Спрашивает, нужно ли решать следующее уравнение
+ *
+ * @return int - возвращает enum YES NO ERROR
+ */
 int WantAnotherOne();
 
-// проводит один тест вычисления корней квадратного уравнения
-int RunTestSq(Coefficient coef, Roots x12, int *error);
+/**
+ * @brief Выводит корни и количество решений
+ *
+ */
+void PrintCoefs(Coefficient *coef);
 
-// выводит корни и количество решений
-void PrintCoefs(Coefficient *);
-
-// Решает уравнения из файла
+/**
+ * @brief Решает уравнения из файла
+ *
+ * @return int
+ */
 int SolveFromFile(FILE *);
 
-// проверяет параметры при запуске программы: запускает чтение из файла или диалог с пользователем
+/**
+ * @brief Проверяет параметры при запуске программы: запускает различные сценарии исполнения программы
+ *
+ * @return int возвращает 1 при ошибке, 0 при штатном исполнении
+ */
 int CheckRunParameters(int, char *);
 
-// выводит пользователю варианты запуска программы
+/**
+ * @brief Выводит пользователю варианты запуска программы
+ */
 void WhatCanDoThisProgram();
 
-// анализирует параметры main
-int CheckRunParameters(int, char**);
+/**
+ * @brief Анализирует параметры main
+ *
+ * @param argc - параметр argc командной строки
+ * @param argv - параметр argv командной строки
+ */
+void CheckRunParameters(int argc, char** argv);
 
-// анализ параметров main
-int RP_SolveFromFile(int, char**, int *); // запуск решения из файла
-int RP_TestsFromFile(int, char**, int *); // запуск теста из файла
-int RP_StressTest(int, char**, int *); // запуск теста со случайными коэффициентами
+// Анализ параметров main
 
-// рисует график функции
+/**
+ * @brief Запуск решения из файла, опирается на параметры main
+ *
+ * @param argc - флаги запуска main
+ * @param argv - флаги запуска main
+ * @param i - указатель на текущий номер параметра
+ * @return int
+ */
+int RP_SolveFromFile(int argc, char** argv, int *i);
+
+/**
+ * @brief Запуск тестов из файла, опирается на параметры main
+ *
+ * @param argc - флаги запуска main
+ * @param argv - флаги запуска main
+ * @param i - указатель на текущий номер параметра
+ * @return int
+ */
+int RP_TestsFromFile(int, char**, int *);
+
+/**
+ * @brief Запуск теста с набором случайных коэффициентов, опирается на параметры main
+ *
+ * @param argc - флаги запуска main
+ * @param argv - флаги запуска main
+ * @param i - указатель на текущий номер параметра
+ * @return int
+ */
+int RP_StressTest(int, char**, int *); ///< Запуск теста со случайными коэффициентами, опирается на параметры main
+
+/**
+ * @brief Выводит график функции в терминал
+ *
+ * @param Func - функция, которую необходимо вывести
+ * @param coef - коэффициенты этой функции
+ */
 int PrintFunc(double Func(Coefficient *, double), Coefficient *coef);
 
-// делает число нечетным, вычитая единицу, если оно четное
-int ToOdd(int x);
-
+/**
+ * @brief Вызывает функцию PrintFunc, после ее выполнение спрашивает у пользователя,
+ *        нужно ли изменить масштаб. Если нужно, просит его ввести новый масштаб и
+ *        заново вызывает PrintFunc с учетом пользовательского масштаба
+ *
+ * @param Func
+ * @param coef
+ */
+void ChangingScalePrintFunc(double Func(Coefficient *, double), Coefficient *coef);
 
 
 #endif

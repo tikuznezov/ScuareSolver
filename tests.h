@@ -3,31 +3,38 @@
 
 #include "sqeq.h"
 
+//! Количество системных тестов
 const int SPEC_TESTS_NUM = 5;
+//! Константа ошибки тестирования
 const int TEST_FAULT = 0;
+//! Константа, ограничивающая количество тестов со случайными величинами
 const int CUT_RAND = 100000;
 
-// данные для тестирования
+//! данные для тестирования
 struct TestData
 {
     Coefficient coef;
     Roots roots;
 };
 
-int CheckTwoSolutions(TestData *test_data, Roots *roots_by_function, int *test_num);
-int CheckOneSolution(TestData *test_data, Roots *roots_by_function, int *test_num);
-int CheckNoSolutions(TestData *test_data, Roots *roots_by_function, int *test_num);
-int CheckInfSolutions(TestData *test_data, Roots *roots_by_function, int *test_num);
+int CheckTwoSolutions(TestData *test_data, Roots *roots_by_function, int *test_num); //!< Проверяет верны ли два корня
+int CheckOneSolution(TestData *test_data, Roots *roots_by_function, int *test_num); //!< Проверяет верен ли корень
+int CheckNoSolutions(TestData *test_data, Roots *roots_by_function, int *test_num); //!< Проверка отсутствия решений
+int CheckInfSolutions(TestData *test_data, Roots *roots_by_function, int *test_num); //!< Проверка бесконечного количества решений
 
-// запускает тесты из внешнего файла
-int TestsFromFile(int (*test)(TestData *, int*), FILE *file);
+/**
+ @brief запускает тесты из внешнего файла
+*/
+int TestsFromFile(FILE *file);
 
-// запускает множество встроенных тестов
-int UnitestSq(int (*test)(TestData *, int*));
+//! Проводит один тест вычисления корней квадратного уравнения
+int RunTestSq(Coefficient coef, Roots x12, int *error);
 
-// запускает тестирование квадратного уравнения
-int RunTestSq(TestData *test_data, int *test_num);
+//! запускает множество встроенных тестов
+int UnitTestSq(); // UnitTest
 
-// запускает тесты со случайными величинами
-int StressTest(int (*test)(TestData *, int*), int num_of_tests);
+//! запускает тесты со случайными величинами
+int StressTest(int num_of_tests);
+
+
 #endif

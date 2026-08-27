@@ -4,7 +4,7 @@
 #define TEST_ERROR
 
 // погрешность приравнивания к нулю
-const double EPS = (0.001);
+const double EPS = (0.00001);
 
 // решает квадратное уравнение
 int SqEqSolve(Coefficient *coef, Roots *result)
@@ -39,18 +39,20 @@ int SqEqSolve(Coefficient *coef, Roots *result)
 }
 
 
-int LinEqSolve(Coefficient *coef, Roots *result)
+void LinEqSolve(Coefficient *coef, Roots *result)
 {
     assert (result);
     assert (coef);
+    assert (Equal(coef->a, 0)) ;
+
     if (Equal(coef->b, 0))
     {
         result->count_roots = NO_SOLUTIONS;
-        return 0;
+        return;
     }
     result->count_roots = ONE_SOLUTION;
     result->x1 = (- coef->c) / coef->b;
-    return 0;
+    return;
 }
 
 
@@ -83,7 +85,7 @@ void PrintSqEqRoots(Roots *result)
 }
 
 // Сравнивает два числа double и выводит 1 если они равны, 0 если различны
-int Equal(double a, double b)
+bool Equal(double a, double b)
 {
     return (fabs(a - b) < EPS);
 }
@@ -98,7 +100,7 @@ int SolveFromFile(FILE *file)
     Roots roots_from_file = {};
 
     int num_of_eq = 0;
-    while (num_of_eq++ < MAX_NUM_OF_EQ)
+    while (num_of_eq++ < MAX_NUM_OF_EQ_FROM_FILE)
     {
         // Получаем коэффициенты и считываем конец файла
         check_eof = fscanf(file, "%lf; %lf; %lf", &coef_from_file.a, &coef_from_file.b, &coef_from_file.c);
@@ -124,6 +126,13 @@ int SolveFromFile(FILE *file)
             Output(error, &roots_from_file);
             printf("\n");
         }
+    }
+    if (num_of_eq >= MAX_NUM_OF_EQ_FROM_FILE)
+    {
+        RED
+        printf("Превышено допустимое количество уравнений в файле или ошибка чтения данных.\n");
+        DEF_COL
+        return 1;
     }
     return 0;
 }

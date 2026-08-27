@@ -1,9 +1,9 @@
-#include "sqeq.h"
 #include "tests.h"
+#include "sqeq.h"
 
 
 
-int CheckRunParameters(int argc, char** argv)
+void CheckRunParameters(int argc, char** argv)
 {
     assert(argv);
 
@@ -14,7 +14,7 @@ int CheckRunParameters(int argc, char** argv)
             //запускает тесты, если при запуске был параметр "st"
             if ((strcmp(argv[i], "-st")) == 0)
             {
-                UnitestSq(RunTestSq); // вернет 0 при штатном исполнении, 1 при ошибке
+                UnitTestSq(); // вернет 0 при штатном исполнении, 1 при ошибке
             }
             // запускает решение по данным из файла, если при запуске был параметр "f" по директории указанной после него
             else if ((strcmp(argv[i], "-f")) == 0)
@@ -26,9 +26,9 @@ int CheckRunParameters(int argc, char** argv)
             {
                 HelloSq();
                 bool isprint = false;
+                // Проверка, есть ли нужный флаг после флага печати. Если его нет, номер не увеличивается.
                 if ((argc >= i+1) && ((strcmp(argv[i+1], "-pr")) == 0))// Прибавляем 1 тк нам нужен i+1 элемент
                 {
-                    // printf("Вывод графика\n");
                     isprint = true;
                     ++i;
                 }
@@ -44,16 +44,19 @@ int CheckRunParameters(int argc, char** argv)
             {
                 RP_StressTest(argc, argv, &i); // вернет 0 при штатном исполнении, 1 при ошибке
             }
+            // если нет нужного параметра, выводит предупреждение
             else
             {
-                RED printf("Введен некорректный параметр\n"); DEF_COL
-                // return 1;
+                RED
+                printf("Введен некорректный параметр\n");
+                DEF_COL
+                // return 1; // Обрыв выполнения при некорректном параметре
             }
         }
     }
     else
         WhatCanDoThisProgram();
-    return 0;
+    return;
 }
 
 
@@ -91,14 +94,16 @@ int RP_TestsFromFile(int argc, char** argv, int *i)
         RED printf("Не указан путь к файлу для тестирования\n"); DEF_COL
         return 1;
     }
+
     FILE *file = fopen(argv[++*i], "r");
+
     if (file == NULL)
     {
-        perror("Ошибка чтения файла для теста");
+        perror("Ошибка чтения файла для теста"); //  perror выводит последнюю системную ошибку
         return 1;
     }
     // решает все уравнения из файла
-    return TestsFromFile(RunTestSq, file);
+    return TestsFromFile(file);
     // завершение программы после конца считывания из файла
 }
 
@@ -114,5 +119,5 @@ int RP_StressTest(int argc, char** argv, int *i)
         RED printf("Неуказанно количество тестов со случайной величиной (-rt *количество тестов*)\n"); DEF_COL
         return 1;
     }
-    return StressTest(RunTestSq, atoi(argv[++*i]));
+    return StressTest(atoi(argv[++*i]));
 }

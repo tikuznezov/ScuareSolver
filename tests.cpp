@@ -4,17 +4,17 @@
 #include "sqeq.h"
 #include "math_sq.h"
 
-// возвращает 1 если тест не пройден
+//! возвращает 1 если тест не пройден
 int RunTestSq(TestData *test_data, int *test_num)
 {
     //printf("Коэффициенты: a = %lg, b = %lg, c = %lg, x1 = %lg, x2 = %lg\n", test_data->coef.a, test_data->coef.b, test_data->coef.c, test_data->roots.x1, test_data->roots.x2);
     assert(test_data);
     assert(test_num);
 
-    int bug = 0; // код ошибки равен нулю
-    Roots roots_by_function = {}; // структура где будут корни из функции
+    int bug = 0; //!< Переменная, считывающая код ошибки. По умолчанию = 0.
+    Roots roots_by_function = {}; //!< структура где будут корни из функции
 
-    // вычисляет корни, записывает их в roots_by_function, получает ошибки в bug
+    //! вычисляет корни, записывает их в roots_by_function, получает ошибки в bug
     bug = SqEqSolve(&test_data->coef, &roots_by_function);
 
     // printf("Получены корни: x1 = %lf, x2 = %lf\n", roots_by_function.x1, roots_by_function.x2);
@@ -56,41 +56,40 @@ int RunTestSq(TestData *test_data, int *test_num)
 }
 
 // запускает множество тестов
-int UnitestSq(int (*test)(TestData *, int*))
+int UnitTestSq()
 {
-    assert(test);
-
     int end = 0;
     int test_num = 0;
 
-    printf("\nЗапуск системных тестов\n");
+    printf("\nЗапуск системных тестов...\n");
 
     TestData test_data[SPEC_TESTS_NUM] =
     {
     //  {a,  b,  c, x1, x2, roots count}
-        {.coef{.a =   1, .b =   2, .c =   1}, .roots{.x1 =  -1, .x2 =   0, ONE_SOLUTION}},
-        {.coef{.a =   0, .b =   0, .c =   2}, .roots{.x1 = NAN, .x2 = NAN, NO_SOLUTIONS}},
-        {.coef{.a =   0, .b =   0, .c =   0}, .roots{.x1 = NAN, .x2 = NAN, INF_SOLUTIONS}},
-        {.coef{.a =   1, .b =   0, .c =  -1}, .roots{.x1 =  -1, .x2 =   1, TWO_SOLUTIONS}},
-        {.coef{.a =  31, .b =  32, .c =  33}, .roots{.x1 = NAN, .x2 = NAN, NO_SOLUTIONS}}
+    //TODO: needs to add tests for linear case
+        {.coef{.a =   0, .b =   0, .c =   0}, .roots{.x1 =  -1, .x2 =   0, .count_roots = INF_SOLUTIONS}},
+        {.coef{.a =   0, .b =   0, .c =   1}, .roots{.x1 = NAN, .x2 = NAN, .count_roots =  NO_SOLUTIONS}},
+        {.coef{.a =   0, .b =   1, .c =   0}, .roots{.x1 = NAN, .x2 = NAN, .count_roots =  ONE_SOLUTION}},
+        {.coef{.a =   1, .b =   0, .c =   0}, .roots{.x1 =  -1, .x2 =   1, .count_roots =  ONE_SOLUTION}},
+        {.coef{.a =  31, .b =  32, .c =  33}, .roots{.x1 = NAN, .x2 = NAN, .count_roots =  NO_SOLUTIONS}}
     };
 
-    printf("Успешная инициализация данных для тестов\n\n");
+    printf("Успешная инициализация данных для тестов.\n\n");
 
     while (test_num < SPEC_TESTS_NUM)
     {
-        printf("Запуск теста %d\n", test_num+1);
-        end = test(&test_data[test_num], &test_num);
+        printf("Запуск теста %d...\n", test_num+1);
+        end = RunTestSq(&test_data[test_num], &test_num);
         test_num++; // указываем номер теста +1 от номера предыдущего
 
         if (end != TEST_FAULT)
         {
-            RED
+            RED // Задает красный цвет для вывода надписи "Тестирование завершено"
             break;
         }
     }
 
-    printf("Тестирование завершено\n");
+    printf("Тестирование завершено.\n");
     DEF_COL
     return 0;
 }
@@ -156,13 +155,13 @@ int CheckNoSolutions(TestData *test_data, Roots *roots_by_function, int *test_nu
     if (test_data->roots.count_roots == NO_SOLUTIONS)
     {
         GREEN
-        printf("No solutions\n");
+        printf("No solutions.\n");
         DEF_COL
     }
     else
     {
         RED
-        printf("Test %d - no solutions error\n", ++*test_num);
+        printf("Test %d - no solutions error.\n", ++*test_num);
         YELLOW
         printf("Коэффициенты: "); PrintCoefs(&test_data->coef);
         DEF_COL
@@ -181,13 +180,13 @@ int CheckInfSolutions(TestData *test_data, Roots *roots_by_function, int *test_n
     if (test_data->roots.count_roots == INF_SOLUTIONS)
     {
         GREEN
-        printf("Inf solutions\n");
+        printf("Inf solutions.\n");
         DEF_COL
     }
     else
     {
         RED
-        printf("Test %d - inf solutions error\n", ++*test_num);
+        printf("Test %d - inf solutions error.\n", ++*test_num);
         YELLOW
         printf("Коэффициенты: "); PrintCoefs(&test_data->coef);
         DEF_COL
@@ -199,12 +198,11 @@ int CheckInfSolutions(TestData *test_data, Roots *roots_by_function, int *test_n
 }
 
 
-int TestsFromFile(int (*test)(TestData *, int*), FILE *file)
+int TestsFromFile(FILE *file)
 {
     assert(file);
-    assert(test);
 
-    printf("Запуск тестов из указанного файла\n");
+    printf("Запуск тестов из указанного файла...\n");
 
     int error = 0;
     int check_eof;
@@ -213,7 +211,7 @@ int TestsFromFile(int (*test)(TestData *, int*), FILE *file)
     Roots roots_from_file = {};
 
     int num_of_eq = 0; // сколько уравнений считалось
-    while (num_of_eq < MAX_NUM_OF_TESTS)
+    while (num_of_eq < MAX_NUM_OF_TESTS_FROM_FILE)
     {
         // Получаем коэффициенты и считываем конец файла
         check_eof = fscanf(file, "%lf; %lf; %lf", &coef_from_file.a, &coef_from_file.b, &coef_from_file.c);
@@ -244,17 +242,25 @@ int TestsFromFile(int (*test)(TestData *, int*), FILE *file)
             break;
         }
     }
-    printf("Тесты успешно пройдены\n");
+
+    if (num_of_eq < MAX_NUM_OF_TESTS_FROM_FILE)
+    {
+        RED
+        printf("Превышено допустимое количество тестов из файла.\n");
+        DEF_COL
+        return 1;
+    }
+
+    printf("Тестирование завершено.\n");
     return 0;
 }
 
 // Тесты с набором случайных коэффициентов
-int StressTest(int (*test)(TestData *, int*), int num_of_tests)
+int StressTest(int num_of_tests)
 {
-    assert(test);
     assert(num_of_tests);
 
-    printf("Запуск теста со случайными величинами\n");
+    printf("Запуск теста со случайными величинами...\n");
 
     int error = 0;
     int current_num_of_test = 0;
@@ -287,6 +293,6 @@ int StressTest(int (*test)(TestData *, int*), int num_of_tests)
             }
 
         }
-    printf("Тестирование завершено\n\n");
+    printf("Тестирование завершено.\n\n");
     return 0;
 }
