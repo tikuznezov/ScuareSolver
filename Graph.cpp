@@ -1,12 +1,6 @@
 #include "../Headers/sqeq.h"
 #include "../Headers/math_sq.h"
 
-struct Scale
-{
-    double x_factor;
-    double y_factor;
-};
-
 
 int InitScreenSpaces(char **, const int, const int); // инициализация экрана пробелами
 
@@ -31,7 +25,7 @@ int PrintFunc(double Func(Coefficient *, double), Coefficient *coef, Scale *user
 
     double RESOLUTION = window.ws_row * 2; // количество проверяемых значений на один шаг по x
 
-    const int PRINTED_SCREEN_COUNT = 2; // количество экранов по вертикали, которое будет занимать график
+    const float PRINTED_SCREEN_COUNT = 1.5; // количество экранов по вертикали, которое будет занимать график
 
 
     Scale scale = ScaleGraph(coef, &window); // структура, содержащая автоматический масштаб
@@ -102,7 +96,6 @@ int PrintFunc(double Func(Coefficient *, double), Coefficient *coef, Scale *user
     printf("\n");
     return 0;
 }
-
 
 // инициализация экрана пробелами
 int InitScreenSpaces(char **point, int lenx, int leny)
@@ -194,7 +187,7 @@ Scale ScaleGraph(Coefficient *coef, winsize *window)
         // if (Equal(ext.y, 0) == false)
             scale.y_factor = dist_x * fabs(ext.y+0.1) / window->ws_row / pow(fabs(coef->a), 0.5/log(fabs(coef->a))); // n отвечает за дальность отступа по координате от центра координат. 4 - не дальше 1/4 экрана, то есть не дальше половины координатной полуплоскости
         // if (Equal(ext.x, 0) == false)
-            scale.x_factor = dist_y * fabs(ext.x+0.1) / window->ws_col / pow(fabs(coef->a), 1/log(fabs(coef->a))) * sqrt(coef->c);
+            scale.x_factor = dist_y * fabs(ext.x+0.1) / window->ws_col / pow(fabs(coef->a), 1/log(fabs(coef->a))) * sqrt(abs(coef->c));
         // }
     }
 
